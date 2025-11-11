@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api.py",
+      "src": "api/fetch.py",
       "use": "@vercel/python"
     }
   ],
@@ -10,16 +10,7 @@
     {
       "src": "/fetch",
       "methods": ["GET"],
-      "dest": "/api.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api.py"
+      "dest": "/api/fetch.py"
     }
-  ],
-  "functions": {
-    "api.py": {
-      "maxDuration": 10
-    }
-  }
+  ]
 }
