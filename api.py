@@ -1,1 +1,0 @@
-from bgmi import app as application
