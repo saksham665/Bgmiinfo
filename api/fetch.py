@@ -37,20 +37,34 @@ class handler(BaseHTTPRequestHandler):
             if response.status_code == 200:
                 original_data = response.json()
                 
-                # Convert Unicode escape sequences
+                # Create new response format
+                new_response = {
+                    "region": "ind",
+                    "server": "bgmi", 
+                    "success": original_data.get("success", False),
+                    "uid": str(uid)
+                }
+                
+                # Add username if available
                 if 'username' in original_data:
                     try:
-                        original_data['username'] = original_data['username'].encode('latin-1').decode('unicode_escape')
+                        new_response["username"] = original_data['username'].encode('latin-1').decode('unicode_escape')
                     except:
-                        pass
+                        new_response["username"] = original_data['username']
+                else:
+                    new_response["username"] = ""
                 
                 self.send_response(200)
                 self.send_header('Content-type', 'application/json')
                 self.end_headers()
-                self.wfile.write(json.dumps(original_data, ensure_ascii=False).encode('utf-8'))
+                self.wfile.write(json.dumps(new_response, ensure_ascii=False).encode('utf-8'))
             else:
                 error_response = {
+                    "region": "ind",
+                    "server": "bgmi",
                     "success": False,
+                    "uid": str(uid),
+                    "username": "",
                     "error": f"API error: {response.status_code}"
                 }
                 self.send_response(502)
@@ -60,7 +74,11 @@ class handler(BaseHTTPRequestHandler):
                 
         except Exception as e:
             error_response = {
+                "region": "ind", 
+                "server": "bgmi",
                 "success": False,
+                "uid": "",
+                "username": "",
                 "error": "Server error"
             }
             self.send_response(500)
